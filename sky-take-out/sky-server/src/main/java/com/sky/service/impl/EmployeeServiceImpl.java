@@ -15,6 +15,7 @@ import com.sky.exception.AccountNotFoundException;
 import com.sky.exception.PasswordErrorException;
 import com.sky.mapper.EmployeeMapper;
 import com.sky.result.PageResult;
+import com.sky.result.Result;
 import com.sky.service.EmployeeService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //密码比对
         // 对前端传来的密码进行md5加密
-        password= DigestUtils.md5DigestAsHex(password.getBytes());
+        password = DigestUtils.md5DigestAsHex(password.getBytes());
         if (!password.equals(employee.getPassword())) {
             //密码错误
             throw new PasswordErrorException(MessageConstant.PASSWORD_ERROR);
@@ -77,15 +78,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         System.out.println("当前service线程id为：" + id);
 
 
-
-
-        Employee employee=new Employee();
+        Employee employee = new Employee();
         //将employeeDTO中的属性拷贝到employee中
-        BeanUtils.copyProperties(employeeDTO,employee);
+        BeanUtils.copyProperties(employeeDTO, employee);
         //设置账号状态
         employee.setStatus(StatusConstant.ENABLE);
         //设置初始密码，并进行md5加密
-        String password= DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes());
+        String password = DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes());
         employee.setPassword(password);
 
         //设置当前记录的创建时间和更新时间
@@ -100,19 +99,69 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
 
-
     /*     * 员工分页查询
      * */
-    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO){
+    public PageResult pageQuery(EmployeePageQueryDTO employeePageQueryDTO) {
         // select * from employee limit 0,10
         //使用pagehelper进行分页查询
-        PageHelper.startPage(employeePageQueryDTO.getPage(),employeePageQueryDTO.getPageSize());
-        Page<Employee> page= employeeMapper.pageQuery(employeePageQueryDTO);
+        PageHelper.startPage(employeePageQueryDTO.getPage(), employeePageQueryDTO.getPageSize());
+        Page<Employee> page = employeeMapper.pageQuery(employeePageQueryDTO);
         //封装分页结果
 
-        PageResult pageResult=new PageResult(page.getTotal(),page.getResult());
+        PageResult pageResult = new PageResult(page.getTotal(), page.getResult());
         return pageResult;
 
     }
 
+    /**
+     * 启用禁用员工账号
+     *
+     * @param status
+     * @param id
+     * @return
+     */
+    public void startOrStop(Integer status, Long id) {
+        //update employee set status = ? where id = ?
+        Employee employee = new Employee();
+        employee.setId(id);
+        employee.setStatus(status);
+        employeeMapper.update(employee);
+
+
+    }
+
+
+
+    /**
+     * 根据id查询员工信息
+     *
+     * @param id
+     * @return
+     */
+    public Employee getById(Long id) {
+
+        Employee employee = employeeMapper.getById(id);
+        employee.setPassword("******");
+        return employee;
+    }
+
+
+    /**
+     * 修改员工信息
+     *
+     * @param employeeDTO
+     */
+    public void update(EmployeeDTO employeeDTO){
+        //将employeeDTO中的属性拷贝到employee中
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeDTO, employee);
+
+        //设置当前记录的修改时间
+        employee.setUpdateTime(LocalDateTime.now());
+
+        //设置当前记录的修改人
+        employee.setUpdateUser(BaseContext.getCurrentId());
+
+        employeeMapper.update(employee);
+    }
 }
