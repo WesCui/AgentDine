@@ -18,3 +18,5 @@
 2025/11/07 21:44:49 [error] 26128#27196: *39 upstream timed out (10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond) while reading response header from upstream, client: 127.0.0.1, server: localhost, request: "POST /api/dish HTTP/1.1", upstream: "http://127.0.0.1:8080/admin/dish", host: "localhost", referrer: "http://localhost/"
 2025/11/08 23:15:05 [error] 29852#30724: *38 client intended to send too large body: 1262750 bytes, client: 127.0.0.1, server: localhost, request: "POST /api/common/upload HTTP/1.1", host: "localhost", referrer: "http://localhost/"
 2025/11/08 23:15:08 [error] 29852#30724: *37 client intended to send too large body: 1988112 bytes, client: 127.0.0.1, server: localhost, request: "POST /api/common/upload HTTP/1.1", host: "localhost", referrer: "http://localhost/"
+2025/12/16 22:20:33 [alert] 25972#27428: worker process 16140 exited with code C0000142
+2025/12/16 22:20:33 [alert] 25972#27428: could not respawn worker
