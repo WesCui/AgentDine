@@ -2,19 +2,19 @@
 
 ## 项目标题
 
-- 推荐标题：基于 LangChain4j + RAG 的多 Agent 智能外卖推荐与交易平台
-- 备选标题 1：融合多 Agent 协作框架的智能餐饮服务平台
+- 推荐标题：基于自研 Agent Runtime 的多 Agent 智能餐饮协作平台
+- 备选标题 1：自研 Agent 运行时框架驱动的智能餐饮服务平台
 - 备选标题 2：B/C 双端智能餐饮服务与多 Agent 协作平台
 
 ---
 
 ## 项目简介
 
-2025.03-2025.06 基于 LangChain4j + RAG 的多 Agent 智能外卖推荐与交易平台 软件开发
+2025.03-2025.06 基于自研 Agent Runtime 的多 Agent 智能餐饮协作平台 软件开发
 
-面向 B/C 双端场景构建智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。在单 Agent 智能点餐基础上，进一步演进为多 Agent 协作架构——构建 Agent Runtime 运行时框架（YAML 配置驱动、Factory/Registry 模式、Skill 动态加载、Context Pruning、多模型 Provider），实现 Orchestrator 编排层与 5 个 Specialist Agent（点餐推荐、订单管理、客服工单、经营分析、后厨出餐）的意图路由与 A2A 通信，并基于 AG-UI 协议完成前端流式对话与状态管理，将传统点餐系统升级为企业级多 Agent 智能平台。
+面向 B/C 双端场景构建智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。核心创新在于：**基于 LangChain4j 底层 LLM 能力，自研了一套完整的 Agent Runtime 运行时框架**——涵盖 YAML 配置驱动引擎、Factory/Registry 可插拔扩展机制、Skill 动态加载系统（10 个 Markdown 技能包）、Context Pruning 裁剪策略（滑动窗口/Token 预算/工具截断）、多模型 Provider（OpenAI/DeepSeek/Qwen）、双后端会话管理（Redis/Memory）、A2A Agent 间通信协议与 AG-UI 前端流式交互协议。在此之上构建了 Orchestrator 编排层与 5 个 Specialist Agent，将传统点餐系统升级为自研框架驱动的多 Agent 智能平台。
 
-**技术栈**：LangChain4j、RAG、Spring Boot、MyBatis、MySQL、Redis、WebSocket、JWT、Nginx、Docker
+**技术栈**：自研 Agent Runtime、LangChain4j、RAG、Spring Boot、MyBatis、MySQL、Redis、WebSocket、JWT、Nginx、Docker
 
 ---
 
@@ -24,9 +24,9 @@
 
 完成商品、套餐、购物车、订单、实时通知与经营分析等模块落地，基于 5 万级用户、3000+ 菜品、20 万级订单数据完成联调与压测，系统在 300 并发下可稳定运行，核心交易请求错误率控制在 0.5% 以内。
 
-**2. 多 Agent 协作框架设计与实现（核心创新）**
+**2. 自研 Agent Runtime 运行时框架（核心创新）**
 
-从单体 LangChain4j Agent 演进出完整的多 Agent 协作平台：
+不依赖第三方 Agent 框架，基于 LangChain4j 底层 LLM 能力自研了一套完整的 Agent Runtime：
 - 构建 **Agent Runtime 运行时框架**：YAML 配置驱动 Agent 创建（agents.yaml），Factory/Registry 模式实现可插拔扩展，多模型 Provider 支持（OpenAI / DeepSeek / Qwen），Redis/Memory 双后端会话管理
 - 实现 **Orchestrator 编排层**：基于关键词的意图分类器，支持对 5 个 Specialist Agent 的自动路由与 A2A 协议通信
 - 设计 **Skill 系统**：10 个 Markdown 格式动态技能包（中国菜系知识、饮食禁忌检查、订单政策、退款策略、投诉处理流程、经营分析方法、报告生成模板、后厨工作流、意图分类规则），支持运行时加载与 LRU 淘汰
@@ -78,11 +78,11 @@
 
 ## 面试可展开点（更新）
 
-- **多 Agent 架构**：为什么从单 Agent 演进到多 Agent？Orchestrator 如何做意图路由？A2A 协议如何设计？YAML 配置驱动的 Agent 如何动态创建？
+- **自研 Runtime**：为什么不直接用 LangChain4j 而是自研一套 Runtime？YAML 配置驱动 vs 硬编码的优劣？Factory/Registry 模式如何实现可插拔扩展？
 - **Skill 系统**：Markdown 格式的设计考量、如何注入 System Prompt、LRU 淘汰策略如何生效
 - **Context Pruning**：滑动窗口 vs Token 预算各适用什么场景？工具结果截断如何保证不丢失关键信息？
 - **AG-UI 协议**：为什么选择 SSE 而非 WebSocket？事件类型如何设计？状态管理如何实现？
-- **AI 应用落地**：LangChain4j 的技术选型、RAG 的 Embedding 模型与向量存储方案、`@Tool` 如何接入业务服务层
+- **AI 应用落地**：为什么选 LangChain4j 作为底层 LLM 框架（而非 Python 生态）、自研 Runtime 的分层设计思想、RAG 的 Embedding 模型与向量存储方案、`@Tool` 如何接入业务服务层
 - **数据库优化**：复合索引如何对应具体查询路径、EXPLAIN 执行计划如何分析、回表成本如何量化
 - **Redis 治理**：JSON 序列化方案、差异化 TTL 与随机过期、热点 Key 互斥重建机制
 - **并发与稳定性**：WebSocket 异步线程池配置、`ConcurrentHashMap` 会话管理、ThreadLocal 清理

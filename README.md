@@ -1,12 +1,13 @@
 <p align="center">
   <h1 align="center">🤖 灵食 AgentDine</h1>
   <p align="center">
-    <strong>基于 LangChain4j + RAG 的多 Agent 智能餐饮协作平台</strong>
+    <strong>自研 Agent Runtime 运行时框架 · 多 Agent 智能餐饮协作平台</strong>
   </p>
   <p align="center">
     <img src="https://img.shields.io/badge/Java-11-blue.svg" alt="Java 11">
     <img src="https://img.shields.io/badge/Spring%20Boot-2.7.3-brightgreen.svg" alt="Spring Boot 2.7.3">
     <img src="https://img.shields.io/badge/LangChain4j-0.32.0-orange.svg" alt="LangChain4j 0.32.0">
+    <img src="https://img.shields.io/badge/自研_Runtime-YAML驱动-red.svg" alt="自研 Runtime">
     <img src="https://img.shields.io/badge/MySQL-8.0-blue.svg" alt="MySQL 8.0">
     <img src="https://img.shields.io/badge/Redis-7.0-red.svg" alt="Redis 7.0">
     <img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License">
@@ -33,7 +34,7 @@
 
 ## 项目简介
 
-**灵食 AgentDine**是一款面向 B/C 双端场景的企业级智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。项目创新性地引入基于 **LangChain4j + RAG** 的多 Agent 智能点餐系统，将用户交互从关键词检索升级为基于意图理解的智能推荐。
+**灵食 AgentDine** 是一款面向 B/C 双端场景的企业级智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。项目核心创新在于：**基于 LangChain4j 底层能力，自研了一套完整的 Agent Runtime 运行时框架**（YAML 配置驱动、Factory/Registry 模式、Skill 系统、Context Pruning、A2A/AG-UI 协议、多模型 Provider），将传统点餐系统升级为多 Agent 智能协作平台。
 
 ### 🎯 业务能力
 
@@ -81,7 +82,7 @@
 │     │Agent  ││Agent ││Agent ││Agent   ││Agent   │        │
 │     └────────┘└──────┘└──────┘└────────┘└────────┘        │
 │  ┌──────────────────────────────────────────────────────┐    │
-│  │        Agent Runtime (运行时框架)                     │    │
+│  │        自研 Agent Runtime (运行时框架)                 │    │
 │  │  YAML配置 · 多模型 · Skill · Pruning · Tool/会话     │    │
 │  └──────────────────────────────────────────────────────┘    │
 │  ┌──────────────────────────────────────────────────────┐    │
@@ -103,8 +104,9 @@
 
 ## 核心特性
 
-### 🤖 智能多 Agent 系统
+### 🤖 自研 Agent Runtime + 多 Agent 协作
 
+- **自研 Runtime 框架** — YAML 配置驱动、Factory/Registry 可插拔扩展、Skill 动态加载、Context Pruning、A2A/AG-UI 协议
 - **主控 Orchestrator** — 关键词意图分类，自动路由到 5 个专业 Agent
 - **FoodRecommendationAgent** — 基于 RAG 语义检索 + 用户偏好 + 历史订单的个性化推荐
 - **OrderManagementAgent** — 订单查询、催单、取消、退款一站式处理
@@ -410,7 +412,7 @@ http://localhost:8080/doc.html
 
 ### Agent 架构
 
-本项目从单体 LangChain4j Agent 演进为 **多 Agent 协作平台**，核心设计：
+**基于 LangChain4j 底层 LLM 能力，自研了一套完整的 Agent Runtime 运行时框架**，不依赖第三方 Agent 平台。核心设计：
 
 ```
 用户消息 → AgentOrchestrator (意图分类)
@@ -430,7 +432,7 @@ Agent       Agent        Agent          Agent
 | 组件 | 说明 |
 |------|------|
 | **AgentRegistry** | Agent 注册中心，管理所有 Agent 的元数据与实例 |
-| **AgentFactory** | 基于 LangChain4j AiServices 的动态 Agent 工厂 |
+| **AgentFactory** | 自研动态 Agent 工厂，封装 LangChain4j AiServices，支持 YAML 配置驱动的 Agent 创建 |
 | **AgentOrchestrator** | 意图分类 → Agent 路由 → A2A 通信 |
 | **ToolRegistry** | 工具注册表，支持 `@Tool` 注解自动注册 |
 | **SkillLoader** | Markdown 格式 Skill 动态加载，LRU 淘汰 |
