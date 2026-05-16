@@ -22,7 +22,7 @@ import com.sky.vo.OrderPaymentVO;
 import com.sky.vo.OrderStatisticsVO;
 import com.sky.vo.OrderSubmitVO;
 import com.sky.vo.OrderVO;
-import com.sky.websocket.WebSocketServer;
+import com.sky.websocket.WebSocketNotificationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +36,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 @Service
@@ -57,7 +56,7 @@ public class OrderServiceImpl implements OrderService {
     @Autowired
     private WeChatPayUtil weChatPayUtil;
     @Autowired
-    private WebSocketServer webSocketServer;
+    private WebSocketNotificationService webSocketNotificationService;
     @Value("${sky.shop.address}")
     private String shopAddress;
 
@@ -173,18 +172,8 @@ public class OrderServiceImpl implements OrderService {
         orderMapper.update(orders);
 
 
-        // 来单提醒,通过WebSocket推送给商户端
-        Map map = new HashMap();
-        map.put("type", 1); // 1表示来单提醒
-        map.put("orderId", ordersDB.getId());
-        map.put("content", "订单号："+ outTradeNo );
-        String json = JSON.toJSONString(map);
-        webSocketServer.sendToAllClient(json);
-
-
-
-
-
+        // 使用异步线程池推送来单提醒，避免阻塞支付回调主流程
+        webSocketNotificationService.notifyNewOrder(ordersDB.getId(), outTradeNo);
 
     }
 
@@ -192,27 +181,42 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 用户端订单分页查询
      *
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    public PageResult pageQuery4User(int page, int pageSize, Integer status) {
+        Long userId = BaseContext.getCurrentId();
+        return pageQuery4User(userId, page, pageSize, status);
+    }
+
+    /**
+     * 查询指定用户的订单历史
+     *
+     * @param userId
      * @param pageNum
      * @param pageSize
      * @param status
      * @return
      */
-    public PageResult pageQuery4User(int pageNum, int pageSize, Integer status) {
+    @Override
+    public PageResult pageQuery4User(Long userId, int page, int pageSize, Integer status) {
         // 设置分页
-        PageHelper.startPage(pageNum, pageSize);
+        PageHelper.startPage(page, pageSize);
 
         OrdersPageQueryDTO ordersPageQueryDTO = new OrdersPageQueryDTO();
-        ordersPageQueryDTO.setUserId(BaseContext.getCurrentId());
+        ordersPageQueryDTO.setUserId(userId);
         ordersPageQueryDTO.setStatus(status);
 
         // 分页条件查询
-        Page<Orders> page = orderMapper.pageQuery(ordersPageQueryDTO);
+        Page<Orders> orderPage = orderMapper.pageQuery(ordersPageQueryDTO);
 
         List<OrderVO> list = new ArrayList();
 
         // 查询出订单明细，并封装入OrderVO进行响应
-        if (page != null && page.getTotal() > 0) {
-            for (Orders orders : page) {
+        if (orderPage != null && orderPage.getTotal() > 0) {
+            for (Orders orders : orderPage) {
                 Long orderId = orders.getId();// 订单id
 
                 // 查询订单明细
@@ -225,7 +229,7 @@ public class OrderServiceImpl implements OrderService {
                 list.add(orderVO);
             }
         }
-        return new PageResult(page.getTotal(), list);
+        return new PageResult(orderPage.getTotal(), list);
     }
 
     /**
@@ -600,13 +604,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
 
-        // 发送催单通知给商户端
-        Map map = new HashMap();
-        map.put("type", 2); // 2表示催单通知
-        map.put("orderId", ordersDB.getId());
-        map.put("content", "订单号："+ ordersDB.getNumber() +"已催单，请尽快处理！");
-        String json = JSON.toJSONString(map);
-        webSocketServer.sendToAllClient(json);
+        // 使用异步线程池推送催单消息，降低实时通知对主链路的影响
+        webSocketNotificationService.notifyReminder(ordersDB.getId(), ordersDB.getNumber());
     }
 
 }

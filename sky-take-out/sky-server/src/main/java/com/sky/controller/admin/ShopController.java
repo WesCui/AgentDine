@@ -1,12 +1,10 @@
 package com.sky.controller.admin;
-
-
 import com.sky.result.Result;
+import com.sky.service.HotDataCacheService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("adminShopController")
@@ -15,10 +13,8 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 public class ShopController {
 
-    public final static String KEY = "SHOP_STATUS";
-
     @Autowired
-    private RedisTemplate redisTemplate;
+    private HotDataCacheService hotDataCacheService;
     /**
      * 修改商铺状态
      * @param status
@@ -28,7 +24,7 @@ public class ShopController {
     @ApiOperation("修改商铺状态")
     public Result setStatus(@PathVariable Integer status) {
         log.info("修改商铺状态: {}", status==1?"开启":"关闭");
-        redisTemplate.opsForValue().set("KEY", status);
+        hotDataCacheService.updateShopStatus(status);
         return Result.success();
     }
 
@@ -39,8 +35,7 @@ public class ShopController {
     @GetMapping("/status")
     @ApiOperation("获取商铺状态")
     public Result<Integer> getStatus() {
-        //log.info("获取商铺状态");
-        Integer status = (Integer) redisTemplate.opsForValue().get("KEY");
+        Integer status = hotDataCacheService.getShopStatus(() -> 1);
         log.info("获取商铺状态: {}", status==1?"开启":"关闭");
         return Result.success(status);
     }

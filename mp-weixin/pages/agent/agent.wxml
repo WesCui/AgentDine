@@ -1,0 +1,69 @@
+<view class="agent-container">
+  <!-- 消息列表 -->
+  <scroll-view class="chat-list" scroll-y="true" scroll-top="{{scrollTop}}" scroll-with-animation="true">
+    <!-- 欢迎区域 -->
+    <view class="welcome-area" wx:if="{{messages.length === 0}}">
+      <image class="welcome-icon" src="../../static/logo_ruiji.png" mode="aspectFit"></image>
+      <view class="welcome-title">苍穹智能助手</view>
+      <view class="welcome-desc">AI 驱动的智能点餐体验</view>
+    </view>
+
+    <!-- 消息气泡 -->
+    <block wx:for="{{messages}}" wx:key="index">
+      <!-- 助手消息 -->
+      <view class="msg-row msg-left" wx:if="{{item.role === 'assistant'}}">
+        <image class="avatar" src="../../static/logo_ruiji.png"></image>
+        <view class="bubble-wrap">
+          <view class="bubble bubble-ai">{{item.content}}</view>
+          <view class="msg-time">{{item.time}}</view>
+        </view>
+      </view>
+
+      <!-- 用户消息 -->
+      <view class="msg-row msg-right" wx:if="{{item.role === 'user'}}">
+        <view class="bubble-wrap">
+          <view class="bubble bubble-user">{{item.content}}</view>
+          <view class="msg-time">{{item.time}}</view>
+        </view>
+        <image class="avatar avatar-user" src="../../static/address.png"></image>
+      </view>
+    </block>
+
+    <!-- 加载动画 -->
+    <view class="msg-row msg-left" wx:if="{{loading}}">
+      <image class="avatar" src="../../static/logo_ruiji.png"></image>
+      <view class="bubble-wrap">
+        <view class="bubble bubble-ai loading-dots">
+          <text class="dot">●</text><text class="dot">●</text><text class="dot">●</text>
+        </view>
+      </view>
+    </view>
+
+    <view style="height: 180rpx;"></view>
+  </scroll-view>
+
+  <!-- 快捷操作（消息为空时显示） -->
+  <view class="quick-actions" wx:if="{{messages.length === 0 && !loading}}">
+    <view class="qa-title">试试这些</view>
+    <view class="qa-grid">
+      <view class="qa-item" wx:for="{{quickActions}}" wx:key="index" data-text="{{item.text}}" bindtap="onQuickAction">
+        <text class="qa-icon">{{item.icon}}</text>
+        <text class="qa-text">{{item.text}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 输入区域 -->
+  <view class="input-area">
+    <input class="input-box"
+           value="{{inputText}}"
+           placeholder="输入你想吃的、想问的..."
+           bindinput="onInput"
+           bindconfirm="sendMessage"
+           confirm-type="send"
+           disabled="{{loading}}"/>
+    <button class="send-btn" bindtap="sendMessage" disabled="{{loading || inputText === ''}}">
+      发送
+    </button>
+  </view>
+</view>

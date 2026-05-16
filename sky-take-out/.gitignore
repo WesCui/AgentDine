@@ -1,6 +1,22 @@
+# Maven
 **/target/
+*.class
+*.jar
+*.war
+
+# IDE
 .idea
 *.iml
-*.class
-*Test.java
-**/test/
+
+# Sensitive config
+application-dev.yml
+application-prod.yml
+*.env
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Claude Code
+.claude/

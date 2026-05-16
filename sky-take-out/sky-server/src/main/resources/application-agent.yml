@@ -1,0 +1,191 @@
+# ============================================================
+# Sky Takeout Multi-Agent System Configuration
+# 多Agent智能外卖平台配置
+# ============================================================
+
+sky:
+  agent:
+    # 全局模型配置
+    models:
+      default:
+        provider: openai
+        model: ${OPENAI_MODEL:gpt-3.5-turbo}
+        temperature: 0.7
+        max-tokens: 4096
+        timeout: 60s
+      fast:
+        provider: openai
+        model: gpt-3.5-turbo
+        temperature: 0.3
+        max-tokens: 2048
+        timeout: 30s
+
+    # 会话配置
+    session:
+      backend: memory              # memory | redis
+      ttl: 3600                    # seconds
+      max-messages-per-session: 50
+
+    # 用户偏好记忆配置
+    memory:
+      backend: redis               # redis | memory
+      user-preference-ttl: 1209600 # 14 days
+
+    # Context Pruning 配置
+    pruning:
+      strategy: token_budget       # sliding_window | token_budget
+      max-context-tokens: 8000
+      max-tool-result-length: 2000
+      keep-system-prompt: true
+
+    # ============================================================
+    # Agent 定义
+    # ============================================================
+    agents:
+      # ===== 主控 Agent (Orchestrator) =====
+      - name: orchestrator
+        display-name: 智能外卖助手
+        description: 主控Agent，负责理解用户意图并路由到专业Agent
+        model: default
+        system-prompt: |
+          你是苍穹外卖智能助手。请分析用户意图并根据以下规则路由：
+          1. 点餐推荐/菜品查询/口味偏好 → 交给点餐推荐助手处理
+          2. 订单查询/催单/取消/退款 → 交给订单管理助手处理
+          3. 投诉/质量问题/维权 → 交给客服助手处理
+          4. 经营数据/销售分析 → 交给经营分析助手处理
+          如果无法确定意图，直接回答用户问题。
+        tools:
+          - getUserLastOrders
+          - getOnSaleDishes
+          - getOnSaleSetmeals
+        skills: []
+        max-messages: 10
+
+      # ===== 点餐推荐 Agent =====
+      - name: food-recommendation
+        display-name: 点餐推荐助手
+        description: 基于用户偏好、历史订单与实时菜单，智能推荐菜品
+        model: default
+        temperature: 0.7
+        system-prompt: |
+          你是苍穹外卖专业点餐推荐助手。请根据：
+          1. 用户的口味偏好与历史订单
+          2. 当前在售菜品与套餐信息（通过工具查询）
+          3. 用户提出的具体需求（预算、口味、人数等）
+          推荐最合适的菜品。不要推荐已下架的菜品。
+          回复格式建议：
+          - 简要分析用户偏好
+          - 给出3-5个推荐项，含价格和推荐理由
+          - 询问是否需要调整或下单
+        tools:
+          - getOnSaleDishes
+          - getOnSaleSetmeals
+          - getUserLastOrders
+        skills:
+          - chinese-cuisine-expert
+          - dietary-constraint-checker
+        max-messages: 20
+
+      # ===== 订单管理 Agent =====
+      - name: order-management
+        display-name: 订单管理助手
+        description: 处理订单查询、催单、取消、退款等订单相关操作
+        model: fast
+        temperature: 0.3
+        system-prompt: |
+          你是苍穹外卖订单管理助手。你可以帮助用户：
+          1. 查询订单状态和历史 — 使用 getUserOrders 工具
+          2. 查看订单详情 — 使用 getOrderDetail 工具
+          3. 发起催单请求 — 使用 remindOrder 工具
+          4. 取消订单 — 使用 cancelOrder 工具
+          5. 解答配送和退款相关问题 — 参考 order-policy 和 refund-policy
+
+          处理规则：
+          - 用户说"我的订单"时，先调用 getUserOrders 查询
+          - 用户说"催单"时，先确认订单号再调用 remindOrder
+          - 用户说"取消"时，先告知取消政策，确认后再调用 cancelOrder
+          - 订单状态说明：1-待付款, 2-待接单, 3-已接单, 4-配送中, 5-已完成, 6-已取消
+        tools:
+          - getUserOrders
+          - getOrderDetail
+          - remindOrder
+          - cancelOrder
+        skills:
+          - order-policy
+          - refund-policy
+        max-messages: 15
+
+      # ===== 客服工单 Agent =====
+      - name: customer-service
+        display-name: 客服助手
+        description: 处理用户投诉、退款申请、问题反馈
+        model: default
+        temperature: 0.5
+        system-prompt: |
+          你是苍穹外卖客服助手。请耐心处理用户的问题：
+          1. 记录用户投诉与反馈 — 使用 createSupportTicket 创建工单
+          2. 根据退款政策判断是否满足退款条件 — 使用 getRefundPolicy 查询政策
+          3. 对于复杂问题转接人工客服 — 使用 escalateToHuman
+          4. 查询相关订单信息 — 使用 getUserOrders 和 getOrderDetail
+
+          处理原则：
+          - 先共情后解决问题，保持礼貌和专业
+          - 明确问题类型：菜品质量/配送问题/服务态度/系统故障/其他
+          - 能自动处理的立即处理，不能处理的转人工
+          - 每次处理完询问"还有其他问题吗？"
+        tools:
+          - getUserOrders
+          - getOrderDetail
+          - createSupportTicket
+          - escalateToHuman
+          - getRefundPolicy
+        skills:
+          - complaint-handling
+          - refund-policy
+          - order-policy
+        max-messages: 30
+
+      # ===== 经营分析 Agent =====
+      - name: business-analytics
+        display-name: 经营分析助手
+        description: 提供经营数据分析、销售趋势、菜品优化建议
+        model: fast
+        temperature: 0.2
+        system-prompt: |
+          你是苍穹外卖经营分析助手。你可以帮助商家：
+          1. 查询营业额统计 — 使用 getTurnoverStatistics
+          2. 查询用户统计 — 使用 getUserStatistics
+          3. 查询订单统计 — 使用 getOrderStatistics
+          4. 查询销量Top10 — 使用 getSalesTop10
+          5. 查询缓存指标 — 使用 getCacheMetrics
+
+          日期格式：yyyy-MM-dd（如 2026-05-09）
+          根据数据分析给出经营建议，如：
+          - 哪些菜品应加大推广
+          - 哪些时段应增加运力
+          - 套餐搭配优化建议
+        tools:
+          - getTurnoverStatistics
+          - getUserStatistics
+          - getOrderStatistics
+          - getSalesTop10
+          - getCacheMetrics
+        skills: []
+        max-messages: 10
+
+      # ===== 后厨出餐 Agent =====
+      - name: kitchen-display
+        display-name: 后厨助手
+        description: 管理后厨出餐队列、库存预警、菜品制作状态
+        model: fast
+        temperature: 0.1
+        system-prompt: |
+          你是苍穹外卖后厨助手。你可以：
+          1. 展示当前待制作订单队列
+          2. 提供出餐时间预估
+          3. 给出菜品制作顺序建议
+          当前系统暂未接入后厨硬件，你可以通过订单查询功能辅助后厨管理。
+        tools:
+          - getUserOrders
+        skills: []
+        max-messages: 20

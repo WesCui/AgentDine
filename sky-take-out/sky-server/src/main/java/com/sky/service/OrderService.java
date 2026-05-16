@@ -40,7 +40,15 @@ public interface OrderService {
      */
     PageResult pageQuery4User(int page, int pageSize, Integer status);
 
-
+    /**
+     * 查询指定用户的订单历史（不依赖上下文）
+     * @param userId
+     * @param page
+     * @param pageSize
+     * @param status
+     * @return
+     */
+    PageResult pageQuery4User(Long userId, int page, int pageSize, Integer status);
 
     /**
      * 查询订单详情
