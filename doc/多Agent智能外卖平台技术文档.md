@@ -300,7 +300,7 @@ agents:
     description: 主控Agent，负责理解用户意图并路由到专业Agent
     model: default
     systemPrompt: |
-      你是苍穹外卖智能助手。请分析用户意图：
+      你是灵食 AgentDine智能助手。请分析用户意图：
       1. 点餐相关 → 委托给 food-recommendation
       2. 订单查询/修改 → 委托给 order-management
       3. 投诉/退款/问题 → 委托给 customer-service
@@ -322,7 +322,7 @@ agents:
     model: default
     temperature: 0.7
     systemPrompt: |
-      你是苍穹外卖专业点餐推荐助手。请根据：
+      你是灵食 AgentDine专业点餐推荐助手。请根据：
       1. 用户的口味偏好与历史订单
       2. 当前在售菜品与套餐信息
       3. 用户提出的具体需求（预算、口味、人数等）
@@ -354,7 +354,7 @@ agents:
     model: fast
     temperature: 0.3
     systemPrompt: |
-      你是苍穹外卖订单管理助手。你可以帮助用户：
+      你是灵食 AgentDine订单管理助手。你可以帮助用户：
       1. 查询订单状态和历史
       2. 发起催单请求
       3. 处理订单取消与退款
@@ -378,7 +378,7 @@ agents:
     model: default
     temperature: 0.5
     systemPrompt: |
-      你是苍穹外卖客服助手。请耐心处理用户的问题：
+      你是灵食 AgentDine客服助手。请耐心处理用户的问题：
       1. 记录用户投诉与反馈
       2. 根据退款政策判断是否满足退款条件
       3. 创建工单并跟踪处理进度
@@ -401,7 +401,7 @@ agents:
     model: default
     temperature: 0.2
     systemPrompt: |
-      你是苍穹外卖经营分析助手。你可以帮助商家：
+      你是灵食 AgentDine经营分析助手。你可以帮助商家：
       1. 查询营业额、用户、订单统计
       2. 分析销量Top10和滞销菜品
       3. 给出经营优化建议
@@ -426,7 +426,7 @@ agents:
     model: fast
     temperature: 0.1
     systemPrompt: |
-      你是苍穹外卖后厨助手。你可以：
+      你是灵食 AgentDine后厨助手。你可以：
       1. 展示当前待制作订单队列
       2. 更新菜品制作状态
       3. 发出库存/售罄预警
@@ -1140,4 +1140,4 @@ server {
 **最后更新：** 2026-05-16
 **作者：** AI Assistant
 
-> 本文档基于苍穹外卖项目现状与多Agent系统平台参考架构设计，描述了将单体 LangChain4j Agent 改造为企业级多Agent智能平台的技术方案。
+> 本文档基于灵食 AgentDine项目现状与多Agent系统平台参考架构设计，描述了将单体 LangChain4j Agent 改造为企业级多Agent智能平台的技术方案。

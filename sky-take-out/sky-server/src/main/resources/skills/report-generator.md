@@ -4,7 +4,7 @@
 
 ### 周报模板
 ```
-## 苍穹外卖经营周报 ({start_date} ~ {end_date})
+## 灵食 AgentDine经营周报 ({start_date} ~ {end_date})
 
 ### 📊 关键指标
 | 指标 | 本周 | 上周 | 环比 |

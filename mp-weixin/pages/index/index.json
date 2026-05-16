@@ -1,6 +1,6 @@
 {
   "navigationStyle": "custom",
-  "navigationBarTitleText": "苍穹外卖",
+  "navigationBarTitleText": "灵食 AgentDine",
   "usingComponents": {
     "nav-bar": "/pages/common/Navbar/navbar",
     "phone": "/components/uni-phone/index"

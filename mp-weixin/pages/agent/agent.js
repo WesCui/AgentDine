@@ -20,7 +20,7 @@ Page({
     this.setData({ sessionId: sessionId });
 
     // 欢迎消息
-    this.addMessage('assistant', '你好！我是苍穹外卖智能助手 🤖\n\n我可以帮你：\n• 🍜 推荐菜品和套餐\n• 📦 查询订单状态\n• ⏰ 催单提醒\n• 💬 解答问题\n\n试试下面的快捷操作，或直接告诉我你想吃什么吧～');
+    this.addMessage('assistant', '你好！我是灵食 AgentDine 智能助手 🤖\n\n我可以帮你：\n• 🍜 推荐菜品和套餐\n• 📦 查询订单状态\n• ⏰ 催单提醒\n• 💬 解答问题\n\n试试下面的快捷操作，或直接告诉我你想吃什么吧～');
   },
 
   onInput: function(e) {

@@ -1,5 +1,5 @@
 -- ============================================================
--- Sky Takeout Multi-Agent System Schema
+-- AgentDine Multi-Agent System Schema
 -- 多Agent智能外卖平台数据库表
 -- ============================================================
 

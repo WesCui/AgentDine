@@ -42,7 +42,7 @@
   "compileType": "miniprogram",
   "libVersion": "2.24.2",
   "appid": "your-wechat-appid",
-  "projectname": "sky-take-out",
+  "projectname": "agentdine",
   "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",

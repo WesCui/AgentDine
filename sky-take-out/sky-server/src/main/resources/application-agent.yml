@@ -1,5 +1,5 @@
 # ============================================================
-# Sky Takeout Multi-Agent System Configuration
+# AgentDine Multi-Agent System Configuration
 # 多Agent智能外卖平台配置
 # ============================================================
 
@@ -48,7 +48,7 @@ sky:
         description: 主控Agent，负责理解用户意图并路由到专业Agent
         model: default
         system-prompt: |
-          你是苍穹外卖智能助手。请分析用户意图并根据以下规则路由：
+          你是灵食 AgentDine智能助手。请分析用户意图并根据以下规则路由：
           1. 点餐推荐/菜品查询/口味偏好 → 交给点餐推荐助手处理
           2. 订单查询/催单/取消/退款 → 交给订单管理助手处理
           3. 投诉/质量问题/维权 → 交给客服助手处理
@@ -68,7 +68,7 @@ sky:
         model: default
         temperature: 0.7
         system-prompt: |
-          你是苍穹外卖专业点餐推荐助手。请根据：
+          你是灵食 AgentDine专业点餐推荐助手。请根据：
           1. 用户的口味偏好与历史订单
           2. 当前在售菜品与套餐信息（通过工具查询）
           3. 用户提出的具体需求（预算、口味、人数等）
@@ -93,7 +93,7 @@ sky:
         model: fast
         temperature: 0.3
         system-prompt: |
-          你是苍穹外卖订单管理助手。你可以帮助用户：
+          你是灵食 AgentDine订单管理助手。你可以帮助用户：
           1. 查询订单状态和历史 — 使用 getUserOrders 工具
           2. 查看订单详情 — 使用 getOrderDetail 工具
           3. 发起催单请求 — 使用 remindOrder 工具
@@ -122,7 +122,7 @@ sky:
         model: default
         temperature: 0.5
         system-prompt: |
-          你是苍穹外卖客服助手。请耐心处理用户的问题：
+          你是灵食 AgentDine客服助手。请耐心处理用户的问题：
           1. 记录用户投诉与反馈 — 使用 createSupportTicket 创建工单
           2. 根据退款政策判断是否满足退款条件 — 使用 getRefundPolicy 查询政策
           3. 对于复杂问题转接人工客服 — 使用 escalateToHuman
@@ -152,7 +152,7 @@ sky:
         model: fast
         temperature: 0.2
         system-prompt: |
-          你是苍穹外卖经营分析助手。你可以帮助商家：
+          你是灵食 AgentDine经营分析助手。你可以帮助商家：
           1. 查询营业额统计 — 使用 getTurnoverStatistics
           2. 查询用户统计 — 使用 getUserStatistics
           3. 查询订单统计 — 使用 getOrderStatistics
@@ -180,7 +180,7 @@ sky:
         model: fast
         temperature: 0.1
         system-prompt: |
-          你是苍穹外卖后厨助手。你可以：
+          你是灵食 AgentDine后厨助手。你可以：
           1. 展示当前待制作订单队列
           2. 提供出餐时间预估
           3. 给出菜品制作顺序建议

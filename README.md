@@ -1,7 +1,7 @@
 <p align="center">
-  <h1 align="center">🛵 Sky Takeout — 苍穹外卖</h1>
+  <h1 align="center">🤖 灵食 AgentDine</h1>
   <p align="center">
-    <strong>基于 LangChain4j + RAG 的智能外卖推荐与交易平台</strong>
+    <strong>基于 LangChain4j + RAG 的多 Agent 智能餐饮协作平台</strong>
   </p>
   <p align="center">
     <img src="https://img.shields.io/badge/Java-11-blue.svg" alt="Java 11">
@@ -33,7 +33,7 @@
 
 ## 项目简介
 
-**苍穹外卖**是一款面向 B/C 双端场景的企业级智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。项目创新性地引入基于 **LangChain4j + RAG** 的多 Agent 智能点餐系统，将用户交互从关键词检索升级为基于意图理解的智能推荐。
+**灵食 AgentDine**是一款面向 B/C 双端场景的企业级智能餐饮服务平台，围绕商品、套餐、购物车、订单、配送状态、实时通知与经营分析形成完整交易闭环。项目创新性地引入基于 **LangChain4j + RAG** 的多 Agent 智能点餐系统，将用户交互从关键词检索升级为基于意图理解的智能推荐。
 
 ### 🎯 业务能力
 
@@ -63,7 +63,7 @@
 ┌─────────────────────────────────────────────────────────────┐
 │                      前端层 (Frontend)                       │
 │  ┌─────────────────────┐  ┌─────────────────────────────┐   │
-│  │  sky-takeout-front  │  │  sky-takeout-admin-front    │   │
+│  │  agentdine-front  │  │  agentdine-admin-front    │   │
 │  │  (C端 — 点餐/Agent) │  │  (B端 — 管理/报表)         │   │
 │  └──────────┬──────────┘  └──────────────┬──────────────┘   │
 └─────────────┼─────────────────────────────┼──────────────────┘
@@ -169,7 +169,7 @@
 ## 项目结构
 
 ```
-sky-takeout/
+agentdine/
 ├── mp-weixin/                # 📱 C端微信小程序 (Vue 2 + uni-app)
 │   ├── pages/
 │   │   ├── index/            # 首页 — 菜品浏览、分类、购物车

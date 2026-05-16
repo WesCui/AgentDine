@@ -1,7 +1,7 @@
 # 智能外卖推荐 Agent 详细设计方案
 
 ## 1. 概述
-本方案旨在为 `Sky Takeout` 项目集成一个基于 LLM (大语言模型) 的智能推荐 Agent。该 Agent 将利用 RAG (检索增强生成) 技术，结合店铺现有的菜品数据，为用户提供个性化的点餐建议。
+本方案旨在为 `AgentDine` 项目集成一个基于 LLM (大语言模型) 的智能推荐 Agent。该 Agent 将利用 RAG (检索增强生成) 技术，结合店铺现有的菜品数据，为用户提供个性化的点餐建议。
 
 ## 2. 技术栈
 - **核心框架**: [LangChain4j](https://github.com/langchain4j/langchain4j) (Java 版 LLM 应用开发框架)

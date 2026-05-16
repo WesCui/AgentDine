@@ -1,6 +1,6 @@
 {
-  "name": "瑞吉外卖",
-  "short_name": "Vue Ts Admin",
+  "name": "灵食 AgentDine",
+  "short_name": "AgentDine",
   "icons": [
     {
       "src": "./img/icons/android-chrome-192x192.png",

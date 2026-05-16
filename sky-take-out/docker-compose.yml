@@ -6,7 +6,7 @@ services:
   # ============================================================
   mysql:
     image: mysql:8.0
-    container_name: sky-mysql
+    container_name: agentdine-mysql
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-103156}
@@ -28,7 +28,7 @@ services:
   # ============================================================
   redis:
     image: redis:7.0-alpine
-    container_name: sky-redis
+    container_name: agentdine-redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -44,11 +44,11 @@ services:
   # ============================================================
   # Sky Server — Spring Boot 后端主服务
   # ============================================================
-  sky-server:
+  agentdine-server:
     build:
-      context: ./sky-server
+      context: ./agentdine-server
       dockerfile: Dockerfile
-    container_name: sky-server
+    container_name: agentdine-server
     restart: unless-stopped
     ports:
       - "8080:8080"
@@ -75,7 +75,7 @@ services:
   # ============================================================
   nginx:
     image: nginx:1.25-alpine
-    container_name: sky-nginx
+    container_name: agentdine-nginx
     restart: unless-stopped
     ports:
       - "80:80"
@@ -84,7 +84,7 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
-      - sky-server
+      - agentdine-server
 
 volumes:
   mysql_data:
